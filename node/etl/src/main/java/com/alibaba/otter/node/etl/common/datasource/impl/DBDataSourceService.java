@@ -202,6 +202,8 @@ public class DBDataSourceService implements DataSourceService, DisposableBean {
                 }
             }
             dbcpDs.setValidationQuery("select 1");
+        } else if (dataMediaType.isPostgresql()) {
+            logger.debug("database type = postgresql");
         } else {
             logger.error("ERROR ## Unknow database type");
         }

@@ -15,6 +15,7 @@
 	<bean id="dbDialectGenerator" class="com.alibaba.otter.node.etl.common.db.dialect.DbDialectGenerator">
 		<property name="defaultLobHandler" ref="defaultLobHandler" />
 		<property name="oracleLobHandler" ref="oracleLobHandler" />
+		<property name="postgresqlLobHandler" ref="postgresqlLobHandler" />
 	</bean>
 	
 	<!--  lob bean -->
@@ -23,6 +24,9 @@
 	</bean>
 	<bean id="oracleLobHandler" class="org.springframework.jdbc.support.lob.OracleLobHandler">
 		<property name="nativeJdbcExtractor" ref="automaticJdbcExtractor"/>
+	</bean>
+	<bean id="postgresqlLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler">
+		<property name="streamAsLob" value="true" />
 	</bean>
 	<bean id="automaticJdbcExtractor" class="com.alibaba.otter.node.etl.common.db.lob.AutomaticJdbcExtractor">
 		<property name="defaultJdbcExtractor">

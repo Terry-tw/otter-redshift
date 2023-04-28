@@ -58,4 +58,21 @@ public class BaseDbTest extends BaseOtterTest {
         return dataMedia;
     }
 
+    public DbDataMedia getPostgresqlMedia() {
+        DbMediaSource dbMediaSource = new DbMediaSource();
+        dbMediaSource.setId(12L);
+        dbMediaSource.setDriver("org.postgresql.Driver");
+        dbMediaSource.setUsername("xxxxx");
+        dbMediaSource.setPassword("xxxxx");
+        dbMediaSource.setUrl("jdbc:postgresql://127.0.0.1:5432/postgres");
+        dbMediaSource.setEncode("UTF-8");
+        dbMediaSource.setType(DataMediaType.POSTGRESQL);
+
+        DbDataMedia dataMedia = new DbDataMedia();
+        dataMedia.setSource(dbMediaSource);
+        dataMedia.setId(3L);
+        dataMedia.setName("columns");
+        dataMedia.setNamespace("srf");
+        return dataMedia;
+    }
 }

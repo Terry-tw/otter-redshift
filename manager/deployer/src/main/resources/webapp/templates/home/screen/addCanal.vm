@@ -110,6 +110,7 @@ $control.setTemplate("home:navigation.vm")
             <input type="radio" name="$canalParameterGroup.sourcingType.key" value="LOCALBINLOG" onclick="changeDisplay('mysqlSourcing','none');changeDisplay('oracleSourcing','none');changeDisplay('localSourcing','table-row');" id="RadioGroup5_2" class="radio"/>localbinlog &nbsp;
 			*#
 			<input type="radio" name="$canalParameterGroup.sourcingType.key" value="OCEANBASE" onclick="changeDisplay('mysqlSourcing','none');changeDisplay('oracleSourcing','none');changeDisplay('localSourcing','none');changeDisplay('obSourcing','table-row');" id="RadioGroup5_3" class="radio"/>oceanbase &nbsp;
+			<input type="radio" name="$canalParameterGroup.sourcingType.key" value="POSTGRESQL" onclick="changeDisplay('mysqlSourcing','table-row');changeDisplay('oracleSourcing','none');changeDisplay('localSourcing','none');changeDisplay('obSourcing','table-row');" id="RadioGroup5_4" class="radio"/>postgresql &nbsp;
 			<br />
 			<span class="red">#addCanalMessage ($canalParameterGroup.sourcingType)</span>
 		</td>

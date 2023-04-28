@@ -54,13 +54,15 @@ public class DataMediaSourceAction extends AbstractAction {
         DataMediaSource dataMediaSource = new DataMediaSource();
         dataMediaSourceInfo.setProperties(dataMediaSource);
 
-        if (dataMediaSource.getType().isMysql() || dataMediaSource.getType().isOracle()) {
+        if (dataMediaSource.getType().isMysql() || dataMediaSource.getType().isOracle() || dataMediaSource.getType().isPostgresql()) {
             DbMediaSource dbMediaSource = new DbMediaSource();
             dataMediaSourceInfo.setProperties(dbMediaSource);
             if (dataMediaSource.getType().isMysql()) {
                 dbMediaSource.setDriver("com.mysql.jdbc.Driver");
             } else if (dataMediaSource.getType().isOracle()) {
                 dbMediaSource.setDriver("oracle.jdbc.driver.OracleDriver");
+            } else if (dataMediaSource.getType().isPostgresql()) {
+                dbMediaSource.setDriver("org.postgresql.Driver");
             }
             try {
                 dataMediaSourceService.create(dbMediaSource);
@@ -107,6 +109,8 @@ public class DataMediaSourceAction extends AbstractAction {
             dbMediaSource.setDriver("com.mysql.jdbc.Driver");
         } else if (dbMediaSource.getType().isOracle()) {
             dbMediaSource.setDriver("oracle.jdbc.driver.OracleDriver");
+        } else if (dbMediaSource.getType().isPostgresql()) {
+            dbMediaSource.setDriver("org.postgresql.Driver");
         }
 
         try {

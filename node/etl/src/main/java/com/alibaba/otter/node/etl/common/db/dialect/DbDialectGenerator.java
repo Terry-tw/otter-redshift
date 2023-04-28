@@ -22,6 +22,7 @@ import org.springframework.jdbc.support.lob.LobHandler;
 
 import com.alibaba.otter.node.etl.common.db.dialect.mysql.MysqlDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleDialect;
+import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
 import com.alibaba.otter.shared.common.model.config.data.DataMediaType;
 
 /**
@@ -30,13 +31,15 @@ import com.alibaba.otter.shared.common.model.config.data.DataMediaType;
  */
 public class DbDialectGenerator {
 
-    protected static final String ORACLE      = "oracle";
-    protected static final String MYSQL       = "mysql";
-    protected static final String TDDL_GROUP  = "TGroupDatabase";
-    protected static final String TDDL_CLIENT = "TDDL";
+    protected static final String ORACLE        = "oracle";
+    protected static final String MYSQL         = "mysql";
+    protected static final String POSTGRESQL  = "postgresql";
+    protected static final String TDDL_GROUP    = "TGroupDatabase";
+    protected static final String TDDL_CLIENT   = "TDDL";
 
     protected LobHandler          defaultLobHandler;
     protected LobHandler          oracleLobHandler;
+    protected LobHandler          postgresqlLobHandler;
 
     protected DbDialect generate(JdbcTemplate jdbcTemplate, String databaseName, String databaseNameVersion,
                                  int databaseMajorVersion, int databaseMinorVersion, DataMediaType dataMediaType) {
@@ -57,6 +60,14 @@ public class DbDialectGenerator {
                 databaseNameVersion,
                 databaseMajorVersion,
                 databaseMinorVersion);
+        } else if (StringUtils.startsWithIgnoreCase(databaseName, POSTGRESQL)) { // for
+                                                                                 // postgresql
+            dialect = new PostgresqlDialect(jdbcTemplate,
+                    postgresqlLobHandler,
+                    databaseName,
+                    databaseNameVersion,
+                    databaseMajorVersion,
+                    databaseMinorVersion);
         } else if (StringUtils.startsWithIgnoreCase(databaseName, TDDL_GROUP)) { // for
                                                                                  // tddl
                                                                                  // group
@@ -77,5 +88,9 @@ public class DbDialectGenerator {
 
     public void setOracleLobHandler(LobHandler oracleLobHandler) {
         this.oracleLobHandler = oracleLobHandler;
+    }
+
+    public void setPostgresqlLobHandler(LobHandler postgresqlLobHandler) {
+        this.postgresqlLobHandler = postgresqlLobHandler;
     }
 }

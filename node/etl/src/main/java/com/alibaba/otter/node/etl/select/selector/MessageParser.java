@@ -40,6 +40,7 @@ import com.alibaba.otter.node.etl.common.db.dialect.DbDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.DbDialectFactory;
 import com.alibaba.otter.node.etl.common.db.dialect.mysql.MysqlDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleDialect;
+import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
 import com.alibaba.otter.node.etl.select.exceptions.SelectException;
 import com.alibaba.otter.node.etl.transform.exception.TransformException;
 import com.alibaba.otter.shared.common.model.config.ConfigHelper;
@@ -785,6 +786,10 @@ public class MessageParser {
 
         public boolean isMysql() {
             return (dbDialect != null && dbDialect instanceof MysqlDialect);
+        }
+
+        public boolean isPostgresql() {
+            return (dbDialect != null && dbDialect instanceof PostgresqlDialect);
         }
 
         public void reload() {

@@ -22,6 +22,7 @@ import com.alibaba.otter.node.etl.common.db.dialect.DbDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.DbDialectFactory;
 import com.alibaba.otter.node.etl.common.db.dialect.mysql.MysqlDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleDialect;
+import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
 import com.alibaba.otter.node.etl.load.loader.db.context.DbLoadContext;
 import com.alibaba.otter.node.etl.load.loader.interceptor.AbstractLoadInterceptor;
 import com.alibaba.otter.node.etl.load.loader.interceptor.LoadInterceptor;
@@ -41,6 +42,7 @@ public class OperationInterceptorFactory extends AbstractLoadInterceptor<DbLoadC
     private DbDialectFactory  dbDialectFactory;
     private LoadInterceptor[] mysqlInterceptors;
     private LoadInterceptor[] oracleInterceptors;
+    private LoadInterceptor[] postgresqlInterceptors;
     private LoadInterceptor[] empty = new LoadInterceptor[0];
 
     public void transactionBegin(DbLoadContext context, List<EventData> currentDatas, DbDialect dialect) {
@@ -69,6 +71,8 @@ public class OperationInterceptorFactory extends AbstractLoadInterceptor<DbLoadC
             return mysqlInterceptors;
         } else if (dbDialect instanceof OracleDialect) {
             return oracleInterceptors;
+        } else if (dbDialect instanceof PostgresqlDialect) {
+            return postgresqlInterceptors;
         } else {
             return empty;
         }
@@ -82,6 +86,10 @@ public class OperationInterceptorFactory extends AbstractLoadInterceptor<DbLoadC
 
     public void setOracleInterceptors(LoadInterceptor[] oracleInterceptors) {
         this.oracleInterceptors = oracleInterceptors;
+    }
+
+    public void setPostgresqlInterceptors(LoadInterceptor[] postgresqlInterceptors) {
+        this.postgresqlInterceptors = postgresqlInterceptors;
     }
 
     public void setDbDialectFactory(DbDialectFactory dbDialectFactory) {

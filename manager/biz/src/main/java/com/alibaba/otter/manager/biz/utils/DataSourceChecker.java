@@ -141,6 +141,9 @@ public class DataSourceChecker {
             } else if (sourceType.equalsIgnoreCase("ORACLE")) {
                 dbMediaSource.setType(DataMediaType.ORACLE);
                 dbMediaSource.setDriver("oracle.jdbc.driver.OracleDriver");
+            } else if (sourceType.equalsIgnoreCase("POSTGRESQL")) {
+                dbMediaSource.setType(DataMediaType.POSTGRESQL);
+                dbMediaSource.setDriver("org.postgresql.Driver");
             }
 
             dataSource = dataSourceCreator.createDataSource(dbMediaSource);
@@ -162,7 +165,11 @@ public class DataSourceChecker {
                 // sql
                 // ="select * from V$NLS_PARAMETERS where parameter in('NLS_LANGUAGE','NLS_TERRITORY','NLS_CHARACTERSET')";
                 sql = "select * from V$NLS_PARAMETERS where parameter in('NLS_CHARACTERSET')";
+            } else if (sourceType.equals("POSTGRESQL")) {
+                sql = "SHOW SERVER_ENCODING";
             }
+
+
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 String defaultEncode = null;
@@ -180,8 +187,13 @@ public class DataSourceChecker {
                     if (!encode.toLowerCase().equals(defaultEncode)) {
                         return ENCODE_FAIL + defaultEncode;
                     }
+                } else if (sourceType.equals("POSTGRESQL")) {
+                    defaultEncode = ((String) rs.getObject(2)).toLowerCase();
+                    defaultEncode = defaultEncode.equals("iso-8859-1") ? "latin1" : defaultEncode;
+                    if (!encode.toLowerCase().equals(defaultEncode)) {
+                        return ENCODE_FAIL + defaultEncode;
+                    }
                 }
-
             }
 
         } catch (SQLException se) {

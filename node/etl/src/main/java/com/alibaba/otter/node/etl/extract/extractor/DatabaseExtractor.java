@@ -50,6 +50,7 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.otter.node.etl.OtterConstants;
 import com.alibaba.otter.node.etl.common.db.dialect.DbDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleDialect;
+import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
 import com.alibaba.otter.node.etl.common.db.utils.SqlUtils;
 import com.alibaba.otter.node.etl.extract.exceptions.ExtractException;
 import com.alibaba.otter.shared.common.model.config.ConfigHelper;
@@ -308,6 +309,8 @@ public class DatabaseExtractor extends AbstractExtractor<DbBatch> implements Ini
                 // oracle类型特殊处理下
                 if (dbDialect instanceof OracleDialect) {
                     keyTableData.columnTypes = getOraclePkTypes(table, keyTableData.columnNames);
+                } else if (dbDialect instanceof PostgresqlDialect) {
+                    logger.debug("DatabaseExtractWorker.run => PostgresqlDialect");
                 }
 
                 boolean needAll = pipeline.getParameters().getSyncMode().isRow()

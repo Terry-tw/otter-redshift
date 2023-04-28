@@ -59,6 +59,12 @@
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 		</dependency>
+		<!-- postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.6.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>

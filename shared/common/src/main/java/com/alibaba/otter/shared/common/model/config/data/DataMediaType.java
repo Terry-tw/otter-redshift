@@ -24,6 +24,8 @@ public enum DataMediaType {
     MYSQL,
     /** oracle DB */
     ORACLE,
+    /** oracle DB */
+    POSTGRESQL,
     /** cobar */
     COBAR,
     /** tddl */
@@ -43,6 +45,10 @@ public enum DataMediaType {
 
     public boolean isOracle() {
         return this == DataMediaType.ORACLE;
+    }
+
+    public boolean isPostgresql() {
+        return this == DataMediaType.POSTGRESQL;
     }
 
     public boolean isTddl() {
