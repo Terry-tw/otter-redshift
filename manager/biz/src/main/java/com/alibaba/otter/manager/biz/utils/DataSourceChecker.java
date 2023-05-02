@@ -188,7 +188,7 @@ public class DataSourceChecker {
                         return ENCODE_FAIL + defaultEncode;
                     }
                 } else if (sourceType.equals("POSTGRESQL")) {
-                    defaultEncode = ((String) rs.getObject(2)).toLowerCase();
+                    defaultEncode = ((String) rs.getObject(1)).toLowerCase();
                     defaultEncode = defaultEncode.equals("iso-8859-1") ? "latin1" : defaultEncode;
                     if (!encode.toLowerCase().equals(defaultEncode)) {
                         return ENCODE_FAIL + defaultEncode;
@@ -295,7 +295,7 @@ public class DataSourceChecker {
                 ModeValue mode = ConfigHelper.parseMode(namespace);
                 String schemaPattern = ConfigHelper.makeSQLPattern(mode, namespace);
                 final ModeValueFilter modeValueFilter = ConfigHelper.makeModeValueFilter(mode, namespace);
-                if (source.getType().isOracle()) {
+                if (source.getType().isOracle() || source.getType().isPostgresql()) {
                     schemaList = Arrays.asList(namespace);
                 } else {
                     schemaList = DdlUtils.findSchemas(jdbcTemplate, schemaPattern, new DdlSchemaFilter() {
