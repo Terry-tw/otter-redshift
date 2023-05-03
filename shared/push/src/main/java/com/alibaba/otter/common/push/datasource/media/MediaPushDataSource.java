@@ -175,6 +175,7 @@ public class MediaPushDataSource implements DataSource {
         } else if (dataMediaType.isPostgresql()) {
             // TODO #PostgreSQL: Add Connection Property
             logger.debug("TODO #PostgreSQL: Add Connection Property");
+            dbcpDs.setValidationQuery("select 1");
         } else {
             logger.error("ERROR ## Unknow database type");
         }
