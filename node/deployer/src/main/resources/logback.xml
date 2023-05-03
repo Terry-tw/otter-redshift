@@ -161,6 +161,31 @@
 		</sift>
 	</appender>
 	
+	<appender name="EVENT_PROCESSOR" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>
+			<Key>otter</Key>
+			<DefaultValue>otter</DefaultValue>
+		</discriminator>
+		<sift>
+			<appender name="EVENT_PROCESSOR_LOG_${otter}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<File>../logs/${otter}/event_provessor.log</File>
+				<rollingPolicy
+					class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<!-- rollover daily -->
+					<fileNamePattern>../logs/${otter}/%d{yyyy-MM-dd}/event_provessor-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+					<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+						<maxFileSize>512MB</maxFileSize>
+					</timeBasedFileNamingAndTriggeringPolicy>
+					<maxHistory>60</maxHistory>
+				</rollingPolicy>
+				<encoder>
+					<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+	
 	<logger name="com.alibaba.otter.node.etl.load.loader.db.interceptor.log.LogLoadInterceptor" additivity="false">  
         <level value="INFO" />  
         <appender-ref ref="DB_LOG" />
@@ -188,6 +213,10 @@
     <logger name="com.alibaba.dubbo.rpc.support.RpcUtils" additivity="false">  
      	<level value="error" />  
         <appender-ref ref="TASK-ROOT" />
+    </logger>
+    <logger name="com.alibaba.otter.node.extend.processor" additivity="false">  
+     	<level value="debug" />  
+        <appender-ref ref="EVENT_PROCESSOR" />
     </logger>
     <!-- 
     <logger name="com.alibaba.otter.shared.common.utils.thread.ExecutorTemplate" additivity="false">  
