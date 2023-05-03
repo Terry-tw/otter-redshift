@@ -32,6 +32,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.ddlutils.model.Column;
@@ -808,6 +809,10 @@ public class DbLoadAction implements InitializingBean, DisposableBean {
                             // mysql driver将bit按照setInt进行处理，会导致数据越界
                             if (dbDialect instanceof MysqlDialect) {
                                 StatementCreatorUtils.setParameterValue(ps, paramIndex, Types.DECIMAL, null, param);
+                            } else if(dbDialect instanceof PostgresqlDialect) {
+                                // 例外處理目標類型為 boolean 的情形
+                                StatementCreatorUtils.setParameterValue(ps, paramIndex, Types.SMALLINT, null, param);
+                                // TODO #PostgreSQL: Check case for type bit
                             } else {
                                 StatementCreatorUtils.setParameterValue(ps, paramIndex, sqlType, null, param);
                             }
