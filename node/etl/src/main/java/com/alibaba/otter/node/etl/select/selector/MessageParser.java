@@ -41,6 +41,7 @@ import com.alibaba.otter.node.etl.common.db.dialect.DbDialectFactory;
 import com.alibaba.otter.node.etl.common.db.dialect.mysql.MysqlDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.postgresql.PostgresqlDialect;
+import com.alibaba.otter.node.etl.common.db.dialect.redshift.RedshiftDialect;
 import com.alibaba.otter.node.etl.select.exceptions.SelectException;
 import com.alibaba.otter.node.etl.transform.exception.TransformException;
 import com.alibaba.otter.shared.common.model.config.ConfigHelper;
@@ -790,6 +791,10 @@ public class MessageParser {
 
         public boolean isPostgresql() {
             return (dbDialect != null && dbDialect instanceof PostgresqlDialect);
+        }
+
+        public boolean isRedshift() {
+            return (dbDialect != null && dbDialect instanceof RedshiftDialect);
         }
 
         public void reload() {

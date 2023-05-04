@@ -144,6 +144,9 @@ public class DataSourceChecker {
             } else if (sourceType.equalsIgnoreCase("POSTGRESQL")) {
                 dbMediaSource.setType(DataMediaType.POSTGRESQL);
                 dbMediaSource.setDriver("org.postgresql.Driver");
+            } else if (sourceType.equalsIgnoreCase("REDSHIFT")) {
+                dbMediaSource.setType(DataMediaType.REDSHIFT);
+                dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
             }
 
             dataSource = dataSourceCreator.createDataSource(dbMediaSource);
@@ -165,7 +168,7 @@ public class DataSourceChecker {
                 // sql
                 // ="select * from V$NLS_PARAMETERS where parameter in('NLS_LANGUAGE','NLS_TERRITORY','NLS_CHARACTERSET')";
                 sql = "select * from V$NLS_PARAMETERS where parameter in('NLS_CHARACTERSET')";
-            } else if (sourceType.equals("POSTGRESQL")) {
+            } else if (sourceType.equals("POSTGRESQL") || sourceType.equals("REDSHIFT")) {
                 sql = "SHOW SERVER_ENCODING";
             }
 
@@ -187,7 +190,7 @@ public class DataSourceChecker {
                     if (!encode.toLowerCase().equals(defaultEncode)) {
                         return ENCODE_FAIL + defaultEncode;
                     }
-                } else if (sourceType.equals("POSTGRESQL")) {
+                } else if (sourceType.equals("POSTGRESQL") || sourceType.equals("REDSHIFT")) {
                     defaultEncode = ((String) rs.getObject(1)).toLowerCase();
                     defaultEncode = defaultEncode.equals("iso-8859-1") ? "latin1" : defaultEncode;
                     if (!encode.toLowerCase().equals(defaultEncode)) {
@@ -295,7 +298,7 @@ public class DataSourceChecker {
                 ModeValue mode = ConfigHelper.parseMode(namespace);
                 String schemaPattern = ConfigHelper.makeSQLPattern(mode, namespace);
                 final ModeValueFilter modeValueFilter = ConfigHelper.makeModeValueFilter(mode, namespace);
-                if (source.getType().isOracle() || source.getType().isPostgresql()) {
+                if (source.getType().isOracle() || source.getType().isPostgresql() || source.getType().isRedshift()) {
                     schemaList = Arrays.asList(namespace);
                 } else {
                     schemaList = DdlUtils.findSchemas(jdbcTemplate, schemaPattern, new DdlSchemaFilter() {

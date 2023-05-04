@@ -176,6 +176,10 @@ public class MediaPushDataSource implements DataSource {
             // TODO #PostgreSQL: Add Connection Property
             logger.debug("TODO #PostgreSQL: Add Connection Property");
             dbcpDs.setValidationQuery("select 1");
+        } else if (dataMediaType.isRedshift()) {
+            // TODO #Redshift: Add Connection Property
+            logger.debug("TODO #Redshift: Add Connection Property");
+            dbcpDs.setValidationQuery("select 1");
         } else {
             logger.error("ERROR ## Unknow database type");
         }

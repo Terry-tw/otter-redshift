@@ -24,8 +24,10 @@ public enum DataMediaType {
     MYSQL,
     /** oracle DB */
     ORACLE,
-    /** oracle DB */
+    /** postgresql DB */
     POSTGRESQL,
+    /** redshift DB */
+    REDSHIFT,
     /** cobar */
     COBAR,
     /** tddl */
@@ -49,6 +51,10 @@ public enum DataMediaType {
 
     public boolean isPostgresql() {
         return this == DataMediaType.POSTGRESQL;
+    }
+
+    public boolean isRedshift() {
+        return this == DataMediaType.REDSHIFT;
     }
 
     public boolean isTddl() {

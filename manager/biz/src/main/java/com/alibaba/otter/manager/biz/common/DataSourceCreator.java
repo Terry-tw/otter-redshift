@@ -187,6 +187,9 @@ public class DataSourceCreator implements DisposableBean {
         } else if (dataMediaType.isPostgresql()) {
             // TODO #PostgreSQL: Add Connection Property
             logger.debug("TODO #PostgreSQL: Add Connection Property");
+        } else if (dataMediaType.isRedshift()) {
+            // TODO #Redshift: Add Connection Property
+            logger.debug("TODO #Redshift: Add Connection Property");
         } else {
             logger.error("ERROR ## Unknow database type");
         }

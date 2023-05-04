@@ -310,7 +310,7 @@ public class DataMediaServiceImpl implements DataMediaService {
         DataMedia dataMedia = null;
         try {
             DataMediaSource dataMediaSource = dataMediaSourceService.findById(dataMediaDo.getDataMediaSourceId());
-            if (dataMediaSource.getType().isMysql() || dataMediaSource.getType().isOracle() || dataMediaSource.getType().isPostgresql()) {
+            if (dataMediaSource.getType().isMysql() || dataMediaSource.getType().isOracle() || dataMediaSource.getType().isPostgresql() || dataMediaSource.getType().isRedshift()) {
                 dataMedia = JsonUtils.unmarshalFromString(dataMediaDo.getProperties(), DbDataMedia.class);
                 dataMedia.setSource(dataMediaSource);
             } else if (dataMediaSource.getType().isNapoli() || dataMediaSource.getType().isMq()) {

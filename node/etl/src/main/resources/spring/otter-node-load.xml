@@ -76,6 +76,7 @@
 	<bean id="canalMysqlInterceptor" class="com.alibaba.otter.node.etl.load.loader.db.interceptor.operation.CanalMysqlInterceptor" parent="abstractOperationInterceptor" />
 	<bean id="canalOracleInterceptor" class="com.alibaba.otter.node.etl.load.loader.db.interceptor.operation.CanalOracleInterceptor" parent="abstractOperationInterceptor" />
 	<bean id="canalPostgresqlInterceptor" class="com.alibaba.otter.node.etl.load.loader.db.interceptor.operation.CanalPostgresqlInterceptor" parent="abstractOperationInterceptor" />
+	<bean id="canalRedshiftInterceptor" class="com.alibaba.otter.node.etl.load.loader.db.interceptor.operation.CanalRedshiftInterceptor" parent="abstractOperationInterceptor" />
 	<bean id="operationInterceptorFactory" class="com.alibaba.otter.node.etl.load.loader.db.interceptor.operation.OperationInterceptorFactory">
 		<property name="mysqlInterceptors">
 			<list>
@@ -90,6 +91,11 @@
 		<property name="postgresqlInterceptors">
 			<list>
 				<ref local="canalPostgresqlInterceptor"/>
+			</list>
+		</property>
+		<property name="redshiftInterceptors">
+			<list>
+				<ref local="canalRedshiftInterceptor"/>
 			</list>
 		</property>
 	</bean>  

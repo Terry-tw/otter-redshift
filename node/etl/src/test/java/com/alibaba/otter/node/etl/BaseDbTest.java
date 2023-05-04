@@ -75,4 +75,22 @@ public class BaseDbTest extends BaseOtterTest {
         dataMedia.setNamespace("srf");
         return dataMedia;
     }
+
+    public DbDataMedia getRedshiftMedia() {
+        DbMediaSource dbMediaSource = new DbMediaSource();
+        dbMediaSource.setId(13L);
+        dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
+        dbMediaSource.setUsername("xxxxx");
+        dbMediaSource.setPassword("xxxxx");
+        dbMediaSource.setUrl("jdbc:redshift://cluster.abcd1234.us-west-4.redshift.amazonaws.com:5439/test");
+        dbMediaSource.setEncode("UTF-8");
+        dbMediaSource.setType(DataMediaType.REDSHIFT);
+
+        DbDataMedia dataMedia = new DbDataMedia();
+        dataMedia.setSource(dbMediaSource);
+        dataMedia.setId(4L);
+        dataMedia.setName("columns");
+        dataMedia.setNamespace("srf");
+        return dataMedia;
+    }
 }
