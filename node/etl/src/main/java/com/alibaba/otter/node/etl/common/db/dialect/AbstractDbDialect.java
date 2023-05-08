@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.otter.shared.common.model.config.data.db.DbMediaSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.apache.ddlutils.model.Table;
@@ -176,7 +178,7 @@ public abstract class AbstractDbDialect implements DbDialect {
                 try {
                     beforeFindTable(jdbcTemplate, names.get(0), names.get(0), names.get(1));
                     DdlUtilsFilter filter = getDdlUtilsFilter(jdbcTemplate, names.get(0), names.get(0), names.get(1));
-                    Table table = DdlUtils.findTable(jdbcTemplate, names.get(0), names.get(0), names.get(1), filter);
+                    Table table = findTable(jdbcTemplate, names, filter);
                     afterFindTable(table, jdbcTemplate, names.get(0), names.get(0), names.get(1));
                     if (table == null) {
                         throw new NestableRuntimeException("no found table [" + names.get(0) + "." + names.get(1)
@@ -196,6 +198,18 @@ public abstract class AbstractDbDialect implements DbDialect {
                                                String tableName) {
         // we need to return null for backward compatibility
         return null;
+    }
+
+    protected Table findTable(JdbcTemplate jdbcTemplate, List<String> names, DdlUtilsFilter filter) throws Exception {
+        // 根據 jdbc url 取得 catalog, mysql 的 catalog 為空時,帶入 chema 替代
+        BasicDataSource dataSource = (BasicDataSource) jdbcTemplate.getDataSource();
+        String catalog = DbMediaSource.findCatalog(dataSource.getUrl());
+
+        if(StringUtils.isEmpty(catalog)) {
+            catalog = names.get(0);
+        }
+
+        return DdlUtils.findTable(jdbcTemplate, catalog, names.get(0), names.get(1), filter);
     }
 
     protected void beforeFindTable(JdbcTemplate jdbcTemplate, String catalogName, String schemaName, String tableName) {

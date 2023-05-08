@@ -40,6 +40,7 @@ import com.alibaba.otter.manager.biz.config.datamediasource.DataMediaSourceServi
 import com.alibaba.otter.shared.common.model.config.data.DataMedia;
 import com.alibaba.otter.shared.common.model.config.data.DataMediaSource;
 import com.alibaba.otter.shared.common.model.config.data.db.DbDataMedia;
+import com.alibaba.otter.shared.common.model.config.data.db.DbMediaSource;
 import com.alibaba.otter.shared.common.model.config.data.mq.MqDataMedia;
 import com.alibaba.otter.shared.common.utils.JsonUtils;
 import com.alibaba.otter.shared.common.utils.meta.DdlUtils;
@@ -74,7 +75,10 @@ public class DataMediaServiceImpl implements DataMediaService {
         String schemaName = dataMedia.getNamespaceMode().getSingleValue();
         String tableName = dataMedia.getNameMode().getSingleValue();
         try {
-            Table table = DdlUtils.findTable(new JdbcTemplate(dataSource), schemaName, schemaName, tableName);
+            // 根據 jdbc url 取得 catalog, mysql 的 catalog 為空時,帶入 chema 替代
+            String catalogName = ((DbMediaSource) dataMedia.getSource()).getCatalog(schemaName);
+            
+            Table table = DdlUtils.findTable(new JdbcTemplate(dataSource), catalogName, schemaName, tableName);
             for (Column column : table.getColumns()) {
                 columnResult.add(column.getName());
             }

@@ -18,11 +18,13 @@ package com.alibaba.otter.shared.common.model.config.data.db;
 
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alibaba.otter.shared.common.model.config.data.DataMediaSource;
 
 /**
  * 基于db的source信息
- * 
+ *
  * @author jianghang
  */
 public class DbMediaSource extends DataMediaSource {
@@ -31,11 +33,12 @@ public class DbMediaSource extends DataMediaSource {
     // private static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     // private static final String ORACLE_DRIVER_PROXY = "com.alibaba.china.jdbc.SimpleDriver";
     // private static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-    private String            url;
-    private String            username;
-    private String            password;
-    private String            driver;
-    private Properties        properties;
+    private String url;
+    private String catalog;
+    private String username;
+    private String password;
+    private String driver;
+    private Properties properties;
 
     public String getUrl() {
         return url;
@@ -43,6 +46,29 @@ public class DbMediaSource extends DataMediaSource {
 
     public void setUrl(String url) {
         this.url = url;
+        this.catalog = findCatalog(url);
+    }
+
+    /**
+     * get catalog from connect string, and return defaultValue when catalog is empty (ex: mysql)
+     *
+     * @return
+     */
+    public String getCatalog(String defaultValue) {
+        catalog = getCatalog();
+        return StringUtils.isEmpty(catalog) ? defaultValue : catalog;
+    }
+
+    /**
+     * get catalog from connect string
+     *
+     * @return
+     */
+    public String getCatalog() {
+        if (this.catalog == null) {
+            this.catalog = findCatalog(this.url);
+        }
+        return this.catalog;
     }
 
     public String getUsername() {
@@ -85,4 +111,16 @@ public class DbMediaSource extends DataMediaSource {
         this.properties = properties;
     }
 
+    public static String findCatalog(String url) {
+        if (StringUtils.isEmpty(url)) {
+            return "";
+        }
+
+        return getTag(getTag(url, ":"), "/");
+    }
+
+    protected static String getTag(String str, String token) {
+        String[] tags = str.split(token);
+        return tags[tags.length - 1];
+    }
 }

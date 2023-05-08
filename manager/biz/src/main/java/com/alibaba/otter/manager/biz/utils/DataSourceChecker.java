@@ -171,8 +171,8 @@ public class DataSourceChecker {
             } else if (sourceType.equals("POSTGRESQL")) {
                 sql = "SHOW SERVER_ENCODING";
             } else if (sourceType.equals("REDSHIFT")) {
-                String[] tags = url.split("/");
-                sql = "SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = '" + tags[tags.length - 1] + "'";
+                String catalog = dbMediaSource.getCatalog();
+                sql = "SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = '" + catalog + "'";
             }
 
 
@@ -232,14 +232,10 @@ public class DataSourceChecker {
             ModeValue namespaceValue = ConfigHelper.parseMode(namespace);
             ModeValue nameValue = ConfigHelper.parseMode(name);
             String tempNamespace = namespaceValue.getSingleValue();
-            String tempCatalog = tempNamespace;
             String tempName = nameValue.getSingleValue();
 
-            // Change catalog name for postgresql & redshift
-            if(dbMediaSource.getType().isPostgresql() || dbMediaSource.getType().isRedshift()) {
-                String[] tags = dbMediaSource.getUrl().split("/");
-                tempCatalog = tags[tags.length - 1];
-            }
+            // 根據 jdbc url 取得 catalog, mysql 的 catalog 為空時,帶入 chema 替代
+            String tempCatalog = dbMediaSource.getCatalog(tempNamespace);
 
             // String descSql = "desc " + tempNamespace + "." + tempName;
             // stmt = conn.createStatement();
@@ -328,18 +324,9 @@ public class DataSourceChecker {
                 String tableNamePattern = ConfigHelper.makeSQLPattern(mode, name);
                 final ModeValueFilter modeValueFilter = ConfigHelper.makeModeValueFilter(mode, name);
 
-                // Change catalog name for postgresql & redshift
-                String catalog = null;
-                if(dbMediaSource.getType().isPostgresql() || dbMediaSource.getType().isRedshift()) {
-                    String[] tags = dbMediaSource.getUrl().split("/");
-                    catalog = tags[tags.length - 1];
-                }
-
                 for (String schema : schemaList) {
-                    // If datasource is not Postgresql or Redshift, then catalog = schema
-                    if(!dbMediaSource.getType().isPostgresql() && !dbMediaSource.getType().isRedshift()) {
-                         catalog = schema;
-                    }
+                    // 根據 jdbc url 取得 catalog, mysql 的 catalog 為空時,帶入 chema 替代
+                    String catalog = dbMediaSource.getCatalog(schema);
 
                     DdlUtils.findTables(jdbcTemplate, catalog, schema, tableNamePattern, null, new DdlTableNameFilter() {
 

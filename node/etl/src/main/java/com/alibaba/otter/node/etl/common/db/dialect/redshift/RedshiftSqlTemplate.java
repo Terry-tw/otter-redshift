@@ -28,20 +28,20 @@ public class RedshiftSqlTemplate extends AbstractSqlTemplate {
             sql.append("?").append((i + 1 < size) ? " , " : "");
         }
         sql.append(")");
-        sql.append(" ON CONFLICT ( ");
-        for (int i = 0; i < size; i++) {
-            sql.append(appendEscape(pkNames[i])).append((i + 1 < size) ? " , " : "");
-        }
-        sql.append(" ) DO UPDATE SET ");
+        // sql.append(" ON CONFLICT ( ");
+        // for (int i = 0; i < size; i++) {
+        //     sql.append(appendEscape(pkNames[i])).append((i + 1 < size) ? " , " : "");
+        // }
+        // sql.append(" ) DO UPDATE SET ");
 
-        size = columnNames.length;
-        for (int i = 0; i < size; i++) {
+        // size = columnNames.length;
+        // for (int i = 0; i < size; i++) {
 
-            sql.append(appendEscape(columnNames[i]))
-                    .append("=excluded.")
-                    .append(appendEscape(columnNames[i]))
-                    .append((i + 1 < size) ? " , " : "");
-        }
+        //     sql.append(appendEscape(columnNames[i]))
+        //             .append("=excluded.")
+        //             .append(appendEscape(columnNames[i]))
+        //             .append((i + 1 < size) ? " , " : "");
+        // }
 
         return sql.toString().intern();// intern优化，避免出现大量相同的字符串
     }

@@ -28,31 +28,6 @@ public class RedshiftDialect extends AbstractDbDialect {
                              int majorVersion, int minorVersion){
         super(jdbcTemplate, lobHandler, name, majorVersion, minorVersion);
         sqlTemplate = new RedshiftSqlTemplate();
-
-        if (StringUtils.contains(databaseVersion, "-TDDL-")) {
-            isDRDS = true;
-            initShardColumns();
-        }
-    }
-
-    private void initShardColumns() {
-        this.shardColumns = OtterMigrateMap.makeSoftValueComputingMap(new Function<List<String>, String>() {
-
-            public String apply(List<String> names) {
-                Assert.isTrue(names.size() == 2);
-                try {
-                    String result = DdlUtils.getShardKeyByDRDS(jdbcTemplate, names.get(0), names.get(0), names.get(1));
-                    if (StringUtils.isEmpty(result)) {
-                        return "";
-                    } else {
-                        return result;
-                    }
-                } catch (Exception e) {
-                    throw new NestableRuntimeException("find table [" + names.get(0) + "." + names.get(1) + "] error",
-                            e);
-                }
-            }
-        });
     }
 
     public boolean isCharSpacePadded() {
@@ -88,6 +63,6 @@ public class RedshiftDialect extends AbstractDbDialect {
     }
 
     public String getDefaultCatalog() {
-        return (String) jdbcTemplate.queryForObject("select database()", String.class);
+        return (String) jdbcTemplate.queryForObject("select current_database()", String.class);
     }
 }
