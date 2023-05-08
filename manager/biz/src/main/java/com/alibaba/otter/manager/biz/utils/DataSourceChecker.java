@@ -146,7 +146,7 @@ public class DataSourceChecker {
                 dbMediaSource.setDriver("org.postgresql.Driver");
             } else if (sourceType.equalsIgnoreCase("REDSHIFT")) {
                 dbMediaSource.setType(DataMediaType.REDSHIFT);
-                dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
+                dbMediaSource.setDriver("com.amazon.redshift.jdbc42.Driver");
             }
 
             dataSource = dataSourceCreator.createDataSource(dbMediaSource);
@@ -168,8 +168,11 @@ public class DataSourceChecker {
                 // sql
                 // ="select * from V$NLS_PARAMETERS where parameter in('NLS_LANGUAGE','NLS_TERRITORY','NLS_CHARACTERSET')";
                 sql = "select * from V$NLS_PARAMETERS where parameter in('NLS_CHARACTERSET')";
-            } else if (sourceType.equals("POSTGRESQL") || sourceType.equals("REDSHIFT")) {
+            } else if (sourceType.equals("POSTGRESQL")) {
                 sql = "SHOW SERVER_ENCODING";
+            } else if (sourceType.equals("REDSHIFT")) {
+                String[] tags = url.split("/");
+                sql = "SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = '" + tags[tags.length - 1] + "'";
             }
 
 
@@ -229,13 +232,20 @@ public class DataSourceChecker {
             ModeValue namespaceValue = ConfigHelper.parseMode(namespace);
             ModeValue nameValue = ConfigHelper.parseMode(name);
             String tempNamespace = namespaceValue.getSingleValue();
+            String tempCatalog = tempNamespace;
             String tempName = nameValue.getSingleValue();
+
+            // Change catalog name for postgresql & redshift
+            if(dbMediaSource.getType().isPostgresql() || dbMediaSource.getType().isRedshift()) {
+                String[] tags = dbMediaSource.getUrl().split("/");
+                tempCatalog = tags[tags.length - 1];
+            }
 
             // String descSql = "desc " + tempNamespace + "." + tempName;
             // stmt = conn.createStatement();
 
             try {
-                Table table = DdlUtils.findTable(new JdbcTemplate(dataSource), tempNamespace, tempNamespace, tempName);
+                Table table = DdlUtils.findTable(new JdbcTemplate(dataSource), tempCatalog, tempNamespace, tempName);
                 if (table == null) {
                     return SELECT_FAIL;
                 }
@@ -317,8 +327,21 @@ public class DataSourceChecker {
                 ModeValue mode = ConfigHelper.parseMode(name);
                 String tableNamePattern = ConfigHelper.makeSQLPattern(mode, name);
                 final ModeValueFilter modeValueFilter = ConfigHelper.makeModeValueFilter(mode, name);
+
+                // Change catalog name for postgresql & redshift
+                String catalog = null;
+                if(dbMediaSource.getType().isPostgresql() || dbMediaSource.getType().isRedshift()) {
+                    String[] tags = dbMediaSource.getUrl().split("/");
+                    catalog = tags[tags.length - 1];
+                }
+
                 for (String schema : schemaList) {
-                    DdlUtils.findTables(jdbcTemplate, schema, schema, tableNamePattern, null, new DdlTableNameFilter() {
+                    // If datasource is not Postgresql or Redshift, then catalog = schema
+                    if(!dbMediaSource.getType().isPostgresql() && !dbMediaSource.getType().isRedshift()) {
+                         catalog = schema;
+                    }
+
+                    DdlUtils.findTables(jdbcTemplate, catalog, schema, tableNamePattern, null, new DdlTableNameFilter() {
 
                         @Override
                         public boolean accept(String catalogName, String schemaName, String tableName) {
