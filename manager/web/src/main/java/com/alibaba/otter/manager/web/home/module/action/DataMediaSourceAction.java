@@ -64,7 +64,7 @@ public class DataMediaSourceAction extends AbstractAction {
             } else if (dataMediaSource.getType().isPostgresql()) {
                 dbMediaSource.setDriver("org.postgresql.Driver");
             } else if (dataMediaSource.getType().isRedshift()) {
-                dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
+                dbMediaSource.setDriver("com.amazon.redshift.jdbc42.Driver");
             }
             try {
                 dataMediaSourceService.create(dbMediaSource);
@@ -114,7 +114,7 @@ public class DataMediaSourceAction extends AbstractAction {
         } else if (dbMediaSource.getType().isPostgresql()) {
             dbMediaSource.setDriver("org.postgresql.Driver");
         } else if (dbMediaSource.getType().isRedshift()) {
-            dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
+            dbMediaSource.setDriver("com.amazon.redshift.jdbc42.Driver");
         }
 
         try {

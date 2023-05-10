@@ -79,7 +79,7 @@ public class BaseDbTest extends BaseOtterTest {
     public DbDataMedia getRedshiftMedia() {
         DbMediaSource dbMediaSource = new DbMediaSource();
         dbMediaSource.setId(13L);
-        dbMediaSource.setDriver("com.amazon.redshift.jdbc.Driver");
+        dbMediaSource.setDriver("com.amazon.redshift.jdbc42.Driver");
         dbMediaSource.setUsername("xxxxx");
         dbMediaSource.setPassword("xxxxx");
         dbMediaSource.setUrl("jdbc:redshift://cluster.abcd1234.us-west-4.redshift.amazonaws.com:5439/test");
