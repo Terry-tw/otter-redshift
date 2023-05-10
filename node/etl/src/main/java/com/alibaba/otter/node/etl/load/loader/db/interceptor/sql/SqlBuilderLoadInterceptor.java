@@ -20,6 +20,7 @@ import com.alibaba.otter.node.etl.common.db.dialect.DbDialect;
 import com.alibaba.otter.node.etl.common.db.dialect.DbDialectFactory;
 import com.alibaba.otter.node.etl.common.db.dialect.SqlTemplate;
 import com.alibaba.otter.node.etl.common.db.dialect.oracle.OracleSqlTemplate;
+import com.alibaba.otter.node.etl.common.db.dialect.redshift.RedshiftSqlTemplate;
 import com.alibaba.otter.node.etl.load.loader.db.context.DbLoadContext;
 import com.alibaba.otter.node.etl.load.loader.interceptor.AbstractLoadInterceptor;
 import com.alibaba.otter.shared.common.model.config.data.db.DbMediaSource;
@@ -110,7 +111,7 @@ public class SqlBuilderLoadInterceptor extends AbstractLoadInterceptor<DbLoadCon
                 otherColumns = buildColumnNames(currentData.getUpdatedColumns());
             }
 
-            if (rowMode && !existOldKeys) {// 如果是行记录,并且不存在主键变更，考虑merge sql
+            if (rowMode && !existOldKeys && !(sqlTemplate instanceof RedshiftSqlTemplate)) {// 如果是行记录,并且不存在主键变更，考虑merge sql
                 sql = sqlTemplate.getMergeSql(schemaName,
                     currentData.getTableName(),
                     keyColumns,
