@@ -21,7 +21,7 @@ abstract class AbstractDemoEventProcessor extends AbstractEventProcessor impleme
     protected DataSource targetDataSource;
 
     public boolean process(EventData eventData) {
-        logger.info("do process start");
+        logger.info("do demo process start");
         String tableName = eventData.getTableName();
 
         if (tableName != null && tableName.startsWith("wallet_")) {
@@ -40,7 +40,7 @@ abstract class AbstractDemoEventProcessor extends AbstractEventProcessor impleme
                 }
             }
 
-            logger.debug("process for {}: isMoneyChange = {}, userId = {}", tableName, isMoneyChange, userId);
+            logger.debug("demo process for {}: isMoneyChange = {}, userId = {}", tableName, isMoneyChange, userId);
 
             if (isMoneyChange && userId > -1) {
                 Integer totalMoney = queryWallet(1, userId) + queryWallet(2, userId) + queryWallet(3, userId);
@@ -48,7 +48,7 @@ abstract class AbstractDemoEventProcessor extends AbstractEventProcessor impleme
             }
         }
 
-        logger.info("do process success");
+        logger.info("do demo process success");
 
         return true;
     }
